@@ -33,7 +33,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             sort_by: event.sortBy,
             is_active: event.is_active,
           );
-
+          print(res);
           emit(HomeSuccess(productList: res));
         } catch (e) {
           print(e);

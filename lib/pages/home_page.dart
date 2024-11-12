@@ -48,6 +48,9 @@ class _HomePageState extends State<HomePage> {
       'bac': '-cost',
     },
   ];
+  List<dynamic> productList = [];
+  bool isLoading = false;
+  String errorMessage = '';
   int selectedCondition = 0;
   int selectedSort = 0;
   List<dynamic> regions = [];
@@ -64,43 +67,59 @@ class _HomePageState extends State<HomePage> {
   bool isFocus = false;
   final _homeBlock = HomeBloc();
 
+  void _updateProducts(List<dynamic> products) {
+    setState(() {
+      productList = products;
+      isLoading = false;
+      errorMessage = '';
+    });
+  }
+
+  void _showError(String error) {
+    setState(() {
+      productList = [];
+      isLoading = false;
+      errorMessage = error;
+    });
+  }
+
   void _searchProducts() {
     _homeBlock.add(SearchProductsEvent(
-      title: _searchController.text,
-      condition: conditionOptions[selectedCondition] != '-'
-          ? conditionOptions[selectedCondition] == "Б/У"
-              ? "Б"
-              : "Н"
-          : '',
-      subCategory: selectedSubCategoryIndex != -1
-          ? categories[selectedCategoryIndex]['sub_categories']
-                  [selectedSubCategoryIndex]['id']
-              .toString()
-          : '',
-      priceMin: selectedPriceRange.start.toString() != '0.0'
-          ? selectedPriceRange.start.toString()
-          : '',
-      priceMax: selectedPriceRange.end.toString() != '10000.0'
-          ? selectedPriceRange.end.toString()
-          : '',
-      region: selectedRegionIndex != 0
-          ? regions[selectedRegionIndex]['id'].toString()
-          : '',
-      district: selectedDistrictIndex != 0
-          ? regions[selectedRegionIndex]['districts'][selectedDistrictIndex]
-                  ['id']
-              .toString()
-          : '',
-      ownerId: '',
-      sortBy:
-          selectedSort == 0 ? '' : sortOptions[selectedSort]['bac'].toString(),
-      is_active: 'true'
-    ));
+        title: _searchController.text,
+        condition: conditionOptions[selectedCondition] != '-'
+            ? conditionOptions[selectedCondition] == "Б/У"
+                ? "Б"
+                : "Н"
+            : '',
+        subCategory: selectedSubCategoryIndex != -1
+            ? categories[selectedCategoryIndex]['sub_categories']
+                    [selectedSubCategoryIndex]['id']
+                .toString()
+            : '',
+        priceMin: selectedPriceRange.start.toString() != '0.0'
+            ? selectedPriceRange.start.toString()
+            : '',
+        priceMax: selectedPriceRange.end.toString() != '10000.0'
+            ? selectedPriceRange.end.toString()
+            : '',
+        region: selectedRegionIndex != 0
+            ? regions[selectedRegionIndex]['id'].toString()
+            : '',
+        district: selectedDistrictIndex != 0
+            ? regions[selectedRegionIndex]['districts'][selectedDistrictIndex]
+                    ['id']
+                .toString()
+            : '',
+        ownerId: '',
+        sortBy: selectedSort == 0
+            ? ''
+            : sortOptions[selectedSort]['bac'].toString(),
+        is_active: 'true'));
   }
 
   @override
   void initState() {
-    _homeBlock.add(GetProductsEvent());
+    _homeBlock.add(SearchProductsEvent());
     _homeBlock.add(GetCategoriesEvent());
     _homeBlock.add(GetRegionsEvent());
 
@@ -630,6 +649,13 @@ class _HomePageState extends State<HomePage> {
       body: BlocListener<HomeBloc, HomeState>(
         bloc: _homeBlock,
         listener: (context, state) {
+          if (state is HomeSuccess) {
+            _updateProducts(state.productList);
+          } else if (state is HomeLoading) {
+            setState(() => isLoading = true);
+          } else if (state is HomeFailure) {
+            _showError(state.error);
+          }
           if (state is HomeCategoriesSuccess) {
             state.categoriesList.insert(
               0,
@@ -649,37 +675,24 @@ class _HomePageState extends State<HomePage> {
             });
           }
         },
-        child: BlocBuilder(
-          builder: (context, state) {
-            if (state is HomeSuccess) {
-              if (state.productList.isNotEmpty) {
-                return ListView.builder(
-                  itemCount: state.productList.length,
-                  itemBuilder: (context, index) {
-                    return ProductCard(
-                      cardData: state.productList[index],
-                    );
-                  },
-                );
-              } else {
-                return Center(
-                  child: Text('Ничего не удалось найти :('),
-                );
-              }
-            }
-            if (state is HomeLoading) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            return Container();
-          },
-          bloc: _homeBlock,
-        ),
+        child: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : errorMessage.isNotEmpty
+                ? Center(child: Text(errorMessage))
+                : productList.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: productList.length,
+                        itemBuilder: (context, index) {
+                          return ProductCard(
+                            cardData: productList[index],
+                          );
+                        },
+                      )
+                    : Center(
+                        child: Text('Ничего не удалось найти :('),
+                      ),
       ),
-      bottomNavigationBar: BotomNavigationBar(
-        selectedIndex: 0,
-      ),
+      bottomNavigationBar: BotomNavigationBar(selectedIndex: 0),
     );
   }
 }

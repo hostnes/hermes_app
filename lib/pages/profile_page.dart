@@ -67,15 +67,22 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       productList = prod;
     });
+
+    var dis = '';
+    var disr = '';
+    if (res['district']['title'] != null) {
+      dis = res['district']['title'];
+      if (res['district']['region'] != null) {
+        disr = res['district']['region'];
+      }
+    }
     setState(() {
       productDetails = {
         'Пол:': res['gender'] == "М" ? "Мужской" : "Женский",
-        'Место нахождения:':
-            "${res['district']['region']}, ${res['district']['title']}",
+        'Место нахождения:': "${dis}, ${disr}",
         'Описание:': res['description'],
       };
     });
-    print(productDetails);
     setState(() {
       regions = reg;
       user_data = res;
@@ -195,7 +202,8 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       Map<String, dynamic> response =
           await ConnectServer.patchUser(user_id['id'], formData);
-      await box.put('auth', response);
+      Map<String, dynamic> res = await ConnectServer.getUser(userId);
+      await box.put('auth', res);
       setState(() {
         user_data['name'] = nameController.text;
         user_data['email'] = emailController.text;
@@ -213,7 +221,6 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       );
     } catch (e) {
-      print("Ошибка при сохранении данных: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Ошибка при сохранении данных')),
       );

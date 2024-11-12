@@ -141,6 +141,7 @@ class ConnectServer {
 
   static Future<Map<String, dynamic>> getUser(userId) async {
     String url = '${base_url}users/${userId}/';
+    print(url);
     Response response = await dio.get(url);
     Map<String, dynamic> responseData = response.data;
     return responseData;

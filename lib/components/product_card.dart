@@ -2,6 +2,7 @@ import 'package:collector_app/pages/preview_card_page.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
+
 class ProductCard extends StatefulWidget {
   final Map<String, dynamic> cardData;
 
@@ -16,7 +17,7 @@ class ProductCard extends StatefulWidget {
 
 class _ProductCardState extends State<ProductCard> {
   var box = Hive.box('likes');
-  
+
   // Checks if the item is liked
   bool get isLiked => box.containsKey(widget.cardData['id'].toString());
 
@@ -43,9 +44,8 @@ class _ProductCardState extends State<ProductCard> {
         Navigator.push(
           context,
           PageRouteBuilder(
-            pageBuilder: (context, animation1, animation2) => PreviewCardPage(
-              cardData: widget.cardData,
-            ),
+            pageBuilder: (context, animation1, animation2) =>
+                PreviewCardPage(cardData: widget.cardData),
             transitionDuration: Duration.zero,
             reverseTransitionDuration: Duration.zero,
           ),
