@@ -21,6 +21,9 @@ class _ProductCardState extends State<ProductCard> {
   // Checks if the item is liked
   bool get isLiked => box.containsKey(widget.cardData['id'].toString());
 
+  var dis = '';
+  var disr = '';
+
   // Toggles the like status
   void toggleLike() {
     setState(() {
@@ -35,6 +38,21 @@ class _ProductCardState extends State<ProductCard> {
   String formatDate(String dateString) {
     DateTime dateTime = DateTime.parse(dateString);
     return DateFormat('dd MMMM yyyy').format(dateTime);
+  }
+
+  @override
+  void initState() {
+    if (widget.cardData['owner_details']['district_details'] != null) {
+      if (widget.cardData['owner_details']['district_details']['title'] !=
+          null) {
+        dis = widget.cardData['owner_details']['district_details']['title'];
+        if (widget.cardData['owner_details']['district_details']['region'] !=
+            null) {
+          disr = widget.cardData['owner_details']['district_details']['region'];
+        }
+      }
+    }
+    super.initState();
   }
 
   @override
@@ -106,7 +124,7 @@ class _ProductCardState extends State<ProductCard> {
                         ),
                       ),
                       Text(
-                        '${widget.cardData['owner_details']['district']['region']}, ${widget.cardData['owner_details']['district']['title']}',
+                        '$dis, ${disr}',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,

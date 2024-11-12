@@ -70,12 +70,15 @@ class _ProfilePageState extends State<ProfilePage> {
 
     var dis = '';
     var disr = '';
-    if (res['district']['title'] != null) {
-      dis = res['district']['title'];
-      if (res['district']['region'] != null) {
-        disr = res['district']['region'];
+    if (res['district_details'] != null) {
+      if (res['district_details']['title'] != null) {
+        dis = res['district_details']['title'];
+        if (res['district_details']['region'] != null) {
+          disr = res['district_details']['region'];
+        }
       }
     }
+
     setState(() {
       productDetails = {
         'Пол:': res['gender'] == "М" ? "Мужской" : "Женский",
@@ -194,9 +197,14 @@ class _ProfilePageState extends State<ProfilePage> {
       'description': descriptionController.text,
       'phone_number': phoneNumberController.text,
       'gender': selectedGender == 'item1' ? 'М' : 'Ж',
+      if (selectedRegionIndex != -1)
+        'district': regions[selectedRegionIndex]['districts']
+            [selectedDistrictIndex]['id'],
       if (_imageFile != null)
-        'photo': await MultipartFile.fromFile(_imageFile!.path,
-            filename: _imageFile!.path.split('/').last),
+        'photo': await MultipartFile.fromFile(
+          _imageFile!.path,
+          filename: _imageFile!.path.split('/').last,
+        ),
     });
 
     try {
@@ -210,6 +218,7 @@ class _ProfilePageState extends State<ProfilePage> {
         user_data['phone_number'] = phoneNumberController.text;
         user_data['description'] = descriptionController.text;
         user_data['gender'] = selectedGender == 'item1' ? 'М' : 'Ж';
+
         if (_imageFile != null) {
           user_data['photo'] = response['photo'];
         }
@@ -293,10 +302,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       style: _buildTextStyle(26, FontWeight.w700)),
                   const SizedBox(height: 10),
                   Text(user_data['email'],
-                      style: _buildTextStyle(18, FontWeight.w500)),
+                      style: _buildTextStyle(16, FontWeight.w500)),
                   const SizedBox(height: 10),
                   Text(user_data['phone_number'],
-                      style: _buildTextStyle(18, FontWeight.normal)),
+                      style: _buildTextStyle(16, FontWeight.normal)),
                 ],
               )
             ],

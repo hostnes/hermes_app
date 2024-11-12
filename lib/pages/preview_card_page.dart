@@ -37,15 +37,26 @@ class _PreviewCardPageState extends State<PreviewCardPage> {
     });
   }
 
+  var dis = '';
+  var disr = '';
+
   @override
   void initState() {
     super.initState();
-
+    if (widget.cardData['owner_details']['district_details'] != null) {
+      if (widget.cardData['owner_details']['district_details']['title'] !=
+          null) {
+        dis = widget.cardData['owner_details']['district_details']['title'];
+        if (widget.cardData['owner_details']['district_details']['region'] !=
+            null) {
+          disr = widget.cardData['owner_details']['district_details']['region'];
+        }
+      }
+    }
     productDetails = {
       'Состояние:': widget.cardData['condition'] == "Б" ? "Б/У" : "Новое",
       'Дата:': formatDate(widget.cardData['date']),
-      'Место нахождения:':
-          "${widget.cardData['owner_details']['district']['title']}, ${widget.cardData['owner_details']['district']['region']}",
+      'Место нахождения:': "${dis}, $disr}",
       'Категория:':
           "${widget.cardData['sub_category_details']['category']}, ${widget.cardData['sub_category_details']['title']}",
     };
