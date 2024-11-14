@@ -77,8 +77,8 @@ class ChatCard extends StatelessWidget {
                               box.get("auth")['di'].toString() ==
                                       chatData['participants'][0]['id']
                                           .toString()
-                                  ? chatData['participants'][0]['name']
-                                  : chatData['participants'][1]['name'],
+                                  ? chatData['participants'][1]['name']
+                                  : chatData['participants'][0]['name'],
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w600,

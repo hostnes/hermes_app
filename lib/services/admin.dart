@@ -13,6 +13,10 @@ void deleteProduct(productId) async {
   ConnectServer.deleteProduct(productId.toString());
 }
 
+void deleteUser(productId) async {
+  ConnectServer.deleteUser(productId.toString());
+}
+
 void postProduct(body) async {
   ConnectServer.createProduct(body);
 }
@@ -39,7 +43,7 @@ Function adminActions(method, model) {
   }
   if (model == 'Users') {
     if (method == 'get') return getUsers;
-    // if (method == 'delete') return deleteProduct;
+    if (method == 'delete') return deleteUser;
     if (method == 'patch') return patchUser;
     if (method == 'post') return postUser;
   }

@@ -27,8 +27,10 @@ class _FavoritesPageState extends State<FavoritesPage> {
     likedProductIds = box.keys.map((key) => key.toString()).toList();
     setState(() {}); // Trigger rebuild to display the loaded IDs
     for (var prodId in likedProductIds) {
-      final productData = await ConnectServer.getProduct(prodId.toString());
-      likedProducts.add(productData);
+      try {
+        final productData = await ConnectServer.getProduct(prodId.toString());
+        likedProducts.add(productData);
+      } catch (e) {}
     }
     setState(() {});
   }

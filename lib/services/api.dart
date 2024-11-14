@@ -35,6 +35,7 @@ class ConnectServer {
 
   static Future<Map<String, dynamic>> getProduct(String productId) async {
     String url = '${base_url}products/${productId}';
+    print(url);
     Response response = await dio.get(url);
     Map<String, dynamic> responseData = response.data;
     return responseData;
@@ -126,6 +127,13 @@ class ConnectServer {
 
   static Future<String> deleteProduct(String productId) async {
     String url = '${base_url}products/${productId}/';
+    Response response = await dio.delete(url);
+    String responseData = response.data;
+    return responseData;
+  }
+
+  static Future<String> deleteUser(String Id) async {
+    String url = '${base_url}users/${Id}/';
     Response response = await dio.delete(url);
     String responseData = response.data;
     return responseData;
