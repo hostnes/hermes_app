@@ -28,9 +28,6 @@ class _BotomNavigationBarState extends State<BotomNavigationBar> {
 
   void _fetchData() async {
     var res = box.get('auth')['id'].toString();
-    print('auth');
-
-    print(box.get('auth'));
     setState(() {
       userId = res;
     });

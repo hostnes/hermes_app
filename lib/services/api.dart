@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 
 class ConnectServer {
-  // static var base_url = 'http://31.128.42.158:8005/api/';
-  static var base_url = 'http://127.0.0.1:8005/api/';
+  static var base_url = 'http://31.128.42.158:8005/api/';
+  // static var base_url = 'http://127.0.0.1:8005/api/';
 
   static Dio dio = Dio();
 
@@ -141,7 +141,6 @@ class ConnectServer {
 
   static Future<Map<String, dynamic>> getUser(userId) async {
     String url = '${base_url}users/${userId}/';
-    print(url);
     Response response = await dio.get(url);
     Map<String, dynamic> responseData = response.data;
     return responseData;
